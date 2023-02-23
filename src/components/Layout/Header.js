@@ -8,7 +8,7 @@ function Header(props) {
         <Fragment>
             <header className={classes.header}>
                 <h1>ReactMeals</h1>
-                <HeaderCartButton/>
+                <HeaderCartButton onShowCart ={props.onShowCart}/>
             </header>
             <div className={classes['main-image']}>//! bu sekılde de kullanılabılıyor
                 // eğer src nın ıcerısıne dırekt you verırsen kabul etmıyor ılle yukarda ımport etmen gerekıyor
