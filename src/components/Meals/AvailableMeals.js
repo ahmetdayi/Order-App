@@ -40,6 +40,7 @@ function AvailableMeals(props) {
                     {DUMMY_MEALS.map((meal, index) => (
                        <MealItem
                            key={index}
+                           id={meal.id}
                            name={meal.name}
                            description={meal.description}
                            price={meal.price}
