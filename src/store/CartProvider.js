@@ -10,9 +10,30 @@ const defaultCartState = {
 const cartReducer = (state, action) => {
 
     if (action.type === "ADD") {
-
-       const updatedItems = state.items.concat(action.item);
         const updatedTotalAmount = state.totalAmount + (action.item.price * action.item.amount);
+
+        //! yenı eklenen itemın ıdsınden cartta baska var mı dıye bakıyoruz ve o elementın ındexını buluyoruz
+        const existingCartItemIndex = state.items.findIndex((item) => item.id === action.item.id);
+
+        //! indexini buldugumuz ıtemın kendısını buluyoruz
+        const existingCartItem = state.items[existingCartItemIndex];
+
+        let updatedItems;
+
+        if (existingCartItem) {
+            //! buldugumuzu ıtemı seperate yapıp amountunu guncellıyoruz
+            const updatedItem = {
+                ...existingCartItem,
+                amount: existingCartItem.amount + action.item.amount
+            };
+
+            //! amountunu guncelledıgımız ıtemı tekrar cart arrayıne atıyoruz kı update ıslemı tamamlansın
+            updatedItems = [...state.items];
+            updatedItems[existingCartItemIndex] = updatedItem;
+        } else {
+            //! eger sepette aynı ıd den yoksa dırekt carta yenı ıtemı eklıyoruz
+            updatedItems = state.items.concat(action.item);
+        }
         return {
             items: updatedItems,
             totalAmount: updatedTotalAmount
@@ -22,6 +43,7 @@ const cartReducer = (state, action) => {
     return defaultCartState;
 
 }
+
 function CartProvider(props) {
     const [cartState, dispatchCartAction] = useReducer(cartReducer, defaultCartState);
 
@@ -33,12 +55,11 @@ function CartProvider(props) {
     }
 
     const cartContext = {
-        items:cartState.items,
+        items: cartState.items,
         totalAmount: cartState.totalAmount,
         addItem: addItemToCartHandler,
         removeItem: removeItemToCartHandler
     }
-
 
 
     return (
