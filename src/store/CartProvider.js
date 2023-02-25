@@ -24,7 +24,7 @@ const cartReducer = (state, action) => {
             //! buldugumuzu ıtemı seperate yapıp amountunu guncellıyoruz
             const updatedItem = {
                 ...existingCartItem,
-                amount: existingCartItem.amount + action.item.amount
+                amount: existingCartItem.amount + 1
             };
 
             //! amountunu guncelledıgımız ıtemı tekrar cart arrayıne atıyoruz kı update ıslemı tamamlansın
@@ -38,6 +38,33 @@ const cartReducer = (state, action) => {
             items: updatedItems,
             totalAmount: updatedTotalAmount
         };
+    }
+
+    if (action.type === "REMOVE"){
+
+        let updatedItems;
+
+        const existingItemIndex = state.items.findIndex((item) => item.id === action.id);
+
+        const existingItem = state.items[existingItemIndex];
+
+        const updatedTotalAmount = state.totalAmount - existingItem.price;
+
+
+        if(existingItem.amount === 1){
+            updatedItems = state.items.filter((item) => item.id !== action.id);
+        }else{
+            const updatedItem = {
+                ...existingItem,
+                amount: existingItem.amount - 1
+            };
+            updatedItems = [...state.items];
+            updatedItems[existingItemIndex] = updatedItem;
+        }
+        return {
+            items: updatedItems,
+            totalAmount: updatedTotalAmount
+        }
     }
 
     return defaultCartState;
