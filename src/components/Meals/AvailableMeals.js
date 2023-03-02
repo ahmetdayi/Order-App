@@ -8,10 +8,12 @@ import MealItem from "./MealItem/MealItem";
 function AvailableMeals(props) {
 
     const [meals, setMeals] = useState([]);
+    const [loading,setLoading] = useState(true);
     useEffect(() => {
         const fetchingData = async () => {
             const response
-                = await fetch('https://react-eb541-default-rtdb.europe-west1.firebasedatabase.app/react/meals.json');
+                = await
+                fetch('https://react-eb541-default-rtdb.europe-west1.firebasedatabase.app/react/meals.json');
             const responseData = await response.json();
 
             const loadedData = [];
@@ -25,10 +27,18 @@ function AvailableMeals(props) {
                 });
             }
             setMeals(loadedData);
+            setLoading(false);
         };
 
         fetchingData();
+
     }, [])
+
+    if (loading){
+        return <section>
+            <p className={classes.mealsLoading}>Loading...</p>
+        </section>
+    }
 
     return (
         <section className={classes.meals}>
