@@ -9,11 +9,16 @@ function AvailableMeals(props) {
 
     const [meals, setMeals] = useState([]);
     const [loading,setLoading] = useState(true);
+    const [httpError,setHttpError] = useState();
     useEffect(() => {
         const fetchingData = async () => {
             const response
                 = await
                 fetch('https://react-eb541-default-rtdb.europe-west1.firebasedatabase.app/react/meals.json');
+
+            if (!response.ok){
+                setHttpError('Something is wrong.');
+            }
             const responseData = await response.json();
 
             const loadedData = [];
@@ -30,7 +35,10 @@ function AvailableMeals(props) {
             setLoading(false);
         };
 
-        fetchingData();
+        fetchingData().catch((error)=>{
+            setLoading(false);
+            setHttpError(error.message)
+        });
 
     }, [])
 
@@ -38,6 +46,11 @@ function AvailableMeals(props) {
         return <section>
             <p className={classes.mealsLoading}>Loading...</p>
         </section>
+    }
+    if (httpError){
+        return <section>
+            <p className={classes.mealsError}>{httpError}</p>
+        </section>;
     }
 
     return (
